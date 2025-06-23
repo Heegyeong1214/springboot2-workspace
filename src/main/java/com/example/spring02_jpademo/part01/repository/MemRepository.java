@@ -43,16 +43,45 @@ public interface MemRepository extends JpaRepository<MemEntity, Integer>, MemRep
 		 //Insert, Update, Delete 작성한 쿼리에서는 @Modifying 넣어줘야 한다
 		 
 		 //INSERT
-		 @Transactional
-		 @Modifying
+//		 @Modifying
 //		 @Query(value="INSERT INTO mem (num, name, age, loc) VALUES (mem_num_seq.nextval, :name, :age, :loc)", nativeQuery = true)
 //		 int insertMemByNative(@Param("name") String name, @Param("age") Integer age, @Param("loc") String loc);
 		 
+		 
+//		 mem이라는 Table명을 줌
+		 @Modifying
 		 @Query(value="INSERT INTO mem (num, name, age, loc) VALUES (mem_num_seq.nextval, :#{#memDTO.name}, :#{#memDTO.age}, :#{#memDTO.loc})", nativeQuery = true)
 		 int insertMemByNative(@Param("memDTO") MemDTO memDTO );
 		 
+		 
+		 //UPDATE
+//		 -> 오라클에서 쿼리문 작성하기 -> JPA
+		 @Modifying
+		   @Query(value = "UPDATE mem SET name = :#{#memEntity.name}, age = :#{#memEntity.age},loc = :#{#memEntity.loc} WHERE num = :#{#memEntity.num}", nativeQuery = true)
+		   int updateMemByNative(@Param("memEntity") MemEntity memEntity);
+		
+		 
+		 //DELETE -> NUM만 넘겨주면된다
+		 @Modifying
+		    @Query(value = "DELETE FROM mem WHERE num = :num", nativeQuery = true)
+		    int deleteMemByNative(@Param("num") int num);
+
+
 		 //JPQL : Update, Delete은 제공/////////////////////////////////
 		 //JPQL에서는 Insert는 제공안함
+		 //테이블 명이 아니라 Entity 줌
 		 
+		 @Modifying
+		 @Query(value = "UPDATE MemEntity m  SET m.name = :#{#memEntity.name}, m.age = :#{#memEntity.age}, m.loc = :#{#memEntity.loc} WHERE m.num = :#{#memEntity.num}")
+		   int updateMemByJpql(@Param("memEntity") MemEntity memEntity);
+		 
+		 @Modifying
+		   @Query(value = "DELETE FROM MemEntity m WHERE m.num = :num")
+		   int deleteMemByJpql(@Param("num") int num);
+
+
+
+//memEntity.name: 넘겨준 값
+		 		 
 	
 }

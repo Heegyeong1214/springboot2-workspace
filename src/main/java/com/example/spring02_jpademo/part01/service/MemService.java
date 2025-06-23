@@ -12,7 +12,12 @@ public interface MemService {
 	public List<MemDTO> getMemByNum(int num);
 	public List<MemDTO> getMemByNameAndAge(String name, int age);
 	public List<MemDTO> getMemByAgeIsNull();
+	
+	
+	//Native Query: Insert, Update, Delete 제공
 	//public int insertMemByNative(String name, int age, String loc);
 	public int insertMemByNative(MemDTO memDTO);
+	public int updateMem(MemDTO memDTO);
+	public int deleteMem(int num);
 	
 }

@@ -10,6 +10,7 @@ import com.example.spring02_jpademo.part01.dto.MemDTO;
 import com.example.spring02_jpademo.part01.entity.MemEntity;
 import com.example.spring02_jpademo.part01.repository.MemRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -25,7 +26,8 @@ public class MemServiceImpl implements MemService {
 	public MemServiceImpl() {
 
 	}
-
+	
+	//DTO 담아서 넘겨줘야 하니까 <> 안에 MemDTO
 	@Override
 	public List<MemDTO> getByJPQL(String name) {
 		List<MemEntity> listMemEntity = memRepository.findByNameJPQL(name);
@@ -97,16 +99,37 @@ public class MemServiceImpl implements MemService {
 		log.info(" findMemEntityByAgeIsNull => {}", listMemDTO);
 		return listMemDTO;
 	}
+
 	
+	//Native Query Insert, update, delete////////////////////////////////////
+	// @Transactional
 //	@Override
 //	public int insertMemByNative(String name, int age, String loc) {
 //		int cnt = memRepository.insertMemByNative(name, age, loc);
 //		return cnt;
 //	}
-	
+	 
+
+	@Transactional
 	@Override
 	public int insertMemByNative(MemDTO memDTO) {
 		int cnt = memRepository.insertMemByNative(memDTO);
+		return cnt;
+	}
+	@Transactional
+	@Override
+	public int updateMem(MemDTO memDTO) {
+		MemEntity memEntity = memDTO.toEntity();
+		//int cnt = memRepository.updateMemByNative(memEntity); //Native
+		int cnt = memRepository.updateMemByJpql(memEntity); //JPQL
+		return cnt;
+	}
+	@Transactional
+	@Override
+	public int deleteMem(int num) {
+		//int cnt = memRepository.deleteMemByNative(num); //Native
+		int cnt = memRepository.deleteMemByJpql(num); //JPQL
+		
 		return cnt;
 	}
 
